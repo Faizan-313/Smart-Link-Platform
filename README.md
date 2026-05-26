@@ -1,6 +1,6 @@
 # Smart Link Platform
 
-A lightweight link management platform that starts as a URL shortener and will grow into a full suite of link-related tools.
+A full-stack link management platform that starts as a URL shortener and will grow into a full suite of link-related tools.
 
 ## Core Features
 
