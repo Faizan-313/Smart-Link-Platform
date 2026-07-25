@@ -1,11 +1,39 @@
+import Home from "./pages/Home"
+import Login from "./pages/Authentication/Login"
+import Navbar from "./components/Navbar"
+import Register from "./pages/Authentication/Register"
+import { Toaster } from "react-hot-toast"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import Footer from "./components/Footer"
+import UserLayout from "./layout/UserLayout"
+import Dashboard from "./pages/user/Dashboard"
 
+function AppContent() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+
+      <Route element={<UserLayout />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard/links" element={<Dashboard />} />
+        <Route path="/dashboard/collections" element={<Dashboard />} />
+        <Route path="/dashboard/analytics" element={<Dashboard />} />
+        <Route path="/dashboard/settings" element={<Dashboard />} />
+      </Route>
+    </Routes>
+  )
+}
 
 function App() {
-
   return (
-    <>
-      <h1>hello to smart link platform</h1>
-    </>
+    <Router>
+      <Toaster position="top-center" reverseOrder={false} />
+      <Navbar />
+      <AppContent />
+      <Footer />
+    </Router>
   )
 }
 
