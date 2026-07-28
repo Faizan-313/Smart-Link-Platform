@@ -2,12 +2,15 @@ import { Mail, Lock, LogIn, Eye, EyeClosed } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import useAuthStore from "../../stores/authStore";
 
 function Login() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: "", password: "" });
-    const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const login = useAuthStore((state) => state.login);
+    const loading = useAuthStore((state) => state.loading);
+    const error = useAuthStore((state) => state.error);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -18,23 +21,22 @@ function Login() {
 
     const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setLoading(true);
+
+        if ([formData.email, formData.password].some((field) => field.trim() === "")) {
+            toast.error("Please fill in all fields");
+            return;
+        }
+
+        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(formData.email)) {
+            toast.error("Please enter a valid email address");
+            return;
+        }
+
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData)
-            })
-            if(res.status === 200) {
-                navigate("/dashboard");
-            }
-        } catch (error) {
-            toast.error("Something went wrong. Please try again.");
-            console.error("Login error: ", error);
-        } finally {
-            setLoading(false);
+            await login(formData);
+            navigate("/dashboard");
+        } catch {
+            toast.error(error);
         }
     };
 

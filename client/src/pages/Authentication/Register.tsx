@@ -2,12 +2,15 @@ import { Mail, Lock, User, UserPlus, Eye, EyeClosed } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import useAuthStore from "../../stores/authStore";
 
 function Register() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ username: "", email: "", password: "" });
-    const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const register = useAuthStore((state) => state.register);
+    const error = useAuthStore((state) => state.error);
+    const loading = useAuthStore((state) => state.loading);
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,24 +37,12 @@ function Register() {
             return;
         }
 
-        setLoading(true);
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData)
-            })
-            if (res.status === 201) {       
-                navigate("/login");
-            }
-        } catch (error) {
-            toast.error("Something went wrong. Please try again.");
-            console.error("Signup error: ", error);
-        } finally {
-            setLoading(false);
-        }
+            await register(formData);    
+            navigate("/login");
+        } catch {
+            toast.error(error);
+        } 
     };
 
     return (
