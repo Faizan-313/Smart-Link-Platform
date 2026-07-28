@@ -22,7 +22,7 @@ const registerUser = async (req: express.Request, res: express.Response) => {
         if(alreadyExistUser) return res.status(409).json({ message: "User already exist" });
 
         const newUser = await userModel.create({ username, email, password });
-        return res.status(201).json({ message: "User registered successfully" });
+        return res.status(201).json({ message: "User registered successfully" , user: { id: newUser._id, username: newUser.username, email: newUser.email } });
     } catch (error) {
         console.log("Error --> ", error);
         return res.status(500).json({ message: "Something went wrong" });
@@ -48,7 +48,7 @@ const loginUser = async (req: express.Request, res: express.Response) => {
         res.cookie("accessToken", accessToken, options);
         res.cookie("refreshToken", refreshToken, options);
 
-        return res.status(200).json({ message: "User logged in successfully" });
+        return res.status(200).json({ message: "User logged in successfully", user: { id: user._id, username: user.username, email: user.email, role: "user" }});
     } catch (error) {
         console.log("Error --> ", error);
         return res.status(500).json({ message: "Something went wrong" });
