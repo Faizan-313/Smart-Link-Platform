@@ -9,6 +9,7 @@ function Register() {
     const [formData, setFormData] = useState({ username: "", email: "", password: "" });
     const [showPassword, setShowPassword] = useState(false);
     const register = useAuthStore((state) => state.register);
+    const login = useAuthStore((state) => state.login);
     const error = useAuthStore((state) => state.error);
     const loading = useAuthStore((state) => state.loading);
 
@@ -38,8 +39,24 @@ function Register() {
         }
 
         try {
-            await register(formData);    
-            navigate("/login");
+            const response: { success: boolean, message: string}  = await register(formData);    
+            if(response.success){
+                toast.success("Account created successfully.");
+                const data = {
+                    email: formData.email,
+                    password: formData.password,
+                }
+                const loginResponse: { success: boolean, message: string } = await login(data);
+                if(loginResponse.success) {
+                    toast.success(loginResponse.message || "Login successful");
+                    navigate("/dashboard");
+                } else {
+                    toast.error("Login failed. Please try again.");
+                }
+            } else {
+                toast.error("Registration failed. Please try again.");
+            }
+
         } catch {
             toast.error(error);
         } 

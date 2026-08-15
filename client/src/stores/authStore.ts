@@ -17,16 +17,17 @@ interface AuthStore {
     login: (data: {
         email: string;
         password: string;
-    }) => Promise<void>;
+    }) => Promise<{ success: boolean; message: string }>;
 
     register: (data: {
         username: string;
         email: string;
         password: string;
-    }) => Promise<void>;
+    }) => Promise<{ success: boolean; message: string }>;
 
     logout: () => void;
 }
+
 
 const useAuthStore = create<AuthStore>()(
     persist(
@@ -41,7 +42,8 @@ const useAuthStore = create<AuthStore>()(
                 try {
                     const res = await axios.post(
                         `${import.meta.env.VITE_API_URL}/auth/login`,
-                        data
+                        data,
+                        { withCredentials: true }
                     );
 
                     set({
@@ -49,6 +51,8 @@ const useAuthStore = create<AuthStore>()(
                         loading: false,
                         error: null,
                     });
+
+                    return {success: true, message: "Login successfull"};
                 } catch (error: unknown) {
                     const message =
                         error instanceof Error
@@ -59,6 +63,8 @@ const useAuthStore = create<AuthStore>()(
                         error: message,
                         loading: false,
                     });
+
+                    return {success: false, message: message};
                 }
             },
 
@@ -68,7 +74,8 @@ const useAuthStore = create<AuthStore>()(
                 try {
                     const res = await axios.post(
                         `${import.meta.env.VITE_API_URL}/auth/register`,
-                        data
+                        data,
+                        { withCredentials: true }
                     );
 
                     set({
@@ -76,6 +83,7 @@ const useAuthStore = create<AuthStore>()(
                         loading: false,
                         error: null,
                     });
+                    return {success: true, message: "Registration successfull"};
                 } catch (error: unknown) {
                     const message =
                         error instanceof Error
@@ -86,14 +94,31 @@ const useAuthStore = create<AuthStore>()(
                         error: message,
                         loading: false,
                     });
+                    return {success: true, message: "Registration failed"};
                 }
             },
+            logout: async () => {
+                set({ loading: true, error: null });
+                try {
+                    await axios.post(`${import.meta.env.VITE_API_URL}/auth/logout`, {}, { withCredentials: true });
 
-            logout: () => {
-                set({
-                    user: null,
-                    error: null,
-                });
+                    set({
+                        user: null,
+                        loading: false,
+                        error: null,
+                    });
+                } catch (error: unknown) {
+                    const message =
+                        error instanceof Error
+                            ? error.message
+                            : "Logout Failed... Please try again.";
+
+                    set({
+                        error: message,
+                        loading: false,
+                    });
+                }
+                
             },
         }),
         {

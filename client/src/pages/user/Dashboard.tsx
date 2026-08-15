@@ -1,6 +1,7 @@
 import { useState } from "react";
-// import useAuthStore from "../../stores/authStore";
-// import { useNavigate } from "react-router-dom";
+import useAuthStore from "../../stores/authStore";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 type RecentLink = {
     title: string;
@@ -42,8 +43,14 @@ const stats = [
 
 const Dashboard = () => {
     const [recentLinks] = useState<RecentLink[]>([]);
-    // const user = useAuthStore((state) => state.user);
-    // const navigate = useNavigate();
+    const user = useAuthStore((state) => state.user);
+    const navigate = useNavigate();
+
+    if(user == null){
+        toast.error("Please login first");
+        navigate("/login");
+        return;
+    }
 
     return (
         <div className="space-y-6">

@@ -33,10 +33,15 @@ function Login() {
         }
 
         try {
-            await login(formData);
-            navigate("/dashboard");
+            const response: { success: boolean, message: string } = await login(formData);
+            if(response.success) {
+                toast.success(response.message || "Login successful");
+                navigate("/dashboard");
+            } else {
+                toast.error("Login failed. Please try again.");
+            }
         } catch {
-            toast.error(error);
+            toast.error(error || "Login failed. Please try again.");
         }
     };
 
