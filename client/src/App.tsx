@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Footer from "./components/Footer"
 import UserLayout from "./layout/UserLayout"
 import Dashboard from "./pages/user/Dashboard"
+import CreateLink from "./pages/user/components/CreateLink"
 
 function AppContent() {
   return (
@@ -17,10 +18,7 @@ function AppContent() {
 
       <Route element={<UserLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboard/links" element={<Dashboard />} />
-        <Route path="/dashboard/collections" element={<Dashboard />} />
-        <Route path="/dashboard/analytics" element={<Dashboard />} />
-        <Route path="/dashboard/settings" element={<Dashboard />} />
+        <Route path="/dashboard/create-link" element={<CreateLink />} />
       </Route>
     </Routes>
   )

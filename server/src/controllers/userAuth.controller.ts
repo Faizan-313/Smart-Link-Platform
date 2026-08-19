@@ -94,7 +94,7 @@ const refreshUserToken = async (req: AuthenticatedRequest, res: express.Response
         const decodedToken = jwt.verify(incommingRefreshToken, process.env.REFRESH_TOKEN_SECRET as string, { algorithms: ["HS256"] });
         if(typeof decodedToken === "string") return res.status(401).json({ message: "Invalid token" });
         
-        const user = await userModel.findById(decodedToken.user._id);
+        const user = await userModel.findById(decodedToken._id);
         if(!user) return res.status(401).json({ message: "invalid token" })
 
         if( incommingRefreshToken !== user?.refreshToken ){
@@ -110,7 +110,7 @@ const refreshUserToken = async (req: AuthenticatedRequest, res: express.Response
         res.cookie("accessToken", accessToken, options);
         res.cookie("refreshToken", refreshToken, options);
 
-        return res.status(200);
+        return res.status(200).json({ message: "Token refreshed successfully" });
 
     } catch (error) {
         console.log("Error --> ", error);

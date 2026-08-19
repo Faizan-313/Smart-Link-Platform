@@ -20,7 +20,7 @@ const createUrl = async (req: AuthenticatedRequest, res: express.Response) => {
 
         const existingUrl = await urlModel.findOne({ fullUrl: url });
         if (existingUrl && (existingUrl.visibility === "public" || existingUrl.user?.toString() === userId)) {
-            return res.status(409).send(existingUrl.shortUrl);
+            return res.status(409).json({ message: "Url already exists", shortUrl: existingUrl.shortUrl });
         }
 
         const shortUrl = await urlModel.create({
@@ -28,7 +28,7 @@ const createUrl = async (req: AuthenticatedRequest, res: express.Response) => {
             visibility: visibility || "public",
             user: userId,
         });
-        res.status(201).send(shortUrl.shortUrl);
+        res.status(201).json({ message: "Url created successfully", shortUrl: shortUrl.shortUrl });
     } catch (error) {
         console.log("Error --> ", error);
         return res.status(500).json({ message: "Something went wrong" });
@@ -41,11 +41,14 @@ const getAllUrl = async (req: AuthenticatedRequest, res: express.Response) => {
         const shortUrls = await urlModel.find(
             userId
                 ? {
-                    $or: [{ user: userId }, { visibility: "public" }],
+                    $or: [{ user: userId, visibility: "private" }, { visibility: "public" }],
                 }
                 : { visibility: "public" }
         );
         if (shortUrls.length <= 0) return res.status(400).json({ message: "short urls not found" });
+
+        //TODO: Add pagination and sorting of urls based on user created and public urls.
+
         return res.status(200).send(shortUrls);
     } catch (error) {
         console.log("Error --> ", error);
@@ -53,22 +56,23 @@ const getAllUrl = async (req: AuthenticatedRequest, res: express.Response) => {
     }
 };
 
-const getUrl = async (req: AuthenticatedRequest, res: express.Response) => {
+const redirectUrl = async (req: AuthenticatedRequest, res: express.Response) => {
     try {
         const shortUrlId = req.params.id;
         if (!shortUrlId) return res.status(400).json({ message: "something went wrong" });
 
         const userId = getUserId(req);
+        if(!userId) return res.status(401).json({ message: "Unauthorized" });
+        
         const shortUrl = await urlModel.findOne({
             _id: shortUrlId,
-            $or: userId
-                ? [{ user: userId }, { visibility: "public" }]
-                : [{ visibility: "public" }],
+            $or: [{ user: userId, visibility: "private" }, { visibility: "public" }]
         });
+        
         if (!shortUrl) return res.status(404).json({ message: "Full url not found" });
 
         shortUrl.clicks++;
-        shortUrl.save();
+        await shortUrl.save();
 
         return res.redirect(`${shortUrl.fullUrl}`);
     } catch (error) {
@@ -76,6 +80,7 @@ const getUrl = async (req: AuthenticatedRequest, res: express.Response) => {
         return res.status(500).json({ message: "Something went wrong" });
     }
 };
+
 
 const deleteUrl = async (req: AuthenticatedRequest, res: express.Response) => {
     try {
@@ -86,8 +91,9 @@ const deleteUrl = async (req: AuthenticatedRequest, res: express.Response) => {
         if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
         const shortUrl = await urlModel.findOneAndDelete({ _id: shortUrlId, user: userId });
-        if (shortUrl) return res.status(200).json({ message: "Full url deleted" });
-        return res.status(400).json({ message: "Something wrong about url" });
+        if (!shortUrl) return res.status(400).json({ message: "Something wrong about url" });
+        
+        return res.status(200).json({ message: "Full url deleted" });
     } catch (error) {
         console.log("Error --> ", error);
         return res.status(500).json({ message: "Something went wrong" });
@@ -97,6 +103,6 @@ const deleteUrl = async (req: AuthenticatedRequest, res: express.Response) => {
 export {
     createUrl,
     getAllUrl,
-    getUrl,
+    redirectUrl,
     deleteUrl,
 };
