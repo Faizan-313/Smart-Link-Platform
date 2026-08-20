@@ -56,6 +56,18 @@ const getAllUrl = async (req: AuthenticatedRequest, res: express.Response) => {
     }
 };
 
+const getUserUrls = async (req: AuthenticatedRequest, res: express.Response) => {
+    try {
+        const userId = getUserId(req);
+        const shortUrls = await urlModel.find({ user: userId });
+
+        return res.status(200).send(shortUrls);
+    } catch (error) {
+        console.log("Error --> ", error);
+        return res.status(500).json({ message: "Something went wrong" });
+    }
+}
+
 const redirectUrl = async (req: AuthenticatedRequest, res: express.Response) => {
     try {
         const shortUrlId = req.params.id;
@@ -105,4 +117,5 @@ export {
     getAllUrl,
     redirectUrl,
     deleteUrl,
+    getUserUrls,
 };

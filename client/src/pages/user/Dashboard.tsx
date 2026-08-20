@@ -1,47 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { api } from "../../api/api";
-import useAuthStore from "../../stores/authStore";
-
-type LinkItem = {
-    _id: string;
-    fullUrl: string;
-    shortUrl: string;
-    visibility: "public" | "private";
-    clicks: number;
-    createdAt?: string;
-};
+import useLinkStore from "../../stores/linkStore";
 
 const Dashboard = () => {
-    const [recentLinks, setRecentLinks] = useState<LinkItem[]>([]);
-    const [Links, setLinks] = useState<LinkItem[]>([]);
-    const [loading, setLoading] = useState(true);
-    const user = useAuthStore((state) => state.user);
+    const fetchLinks = useLinkStore((state) => state.fetchLinks);
+    const Links = useLinkStore((state) => state.links);
+    const loading = useLinkStore((state) => state.loading);
 
     useEffect(() => {
-        const fetchLinks = async () => {
-            try {
-                const response = await api<LinkItem[]>("GET", "/shortUrl");
-                const links = Array.isArray(response) ? response : [];
-                setLinks(links);
-                const latestTwo = links
-                    .sort(
-                        (a, b) =>
-                            new Date(b.createdAt ?? 0).getTime() -
-                            new Date(a.createdAt ?? 0).getTime()
-                    )
-                    .slice(0, 2);
-                setRecentLinks(latestTwo);
-            } catch {
-                setRecentLinks([]);
-                setLinks([]);
-            } finally {
-                setLoading(false);
-            }
-        };
+        void fetchLinks();
+    }, [fetchLinks]);
 
-        fetchLinks();
-    }, [user]);
+    const recentLinks = [...Links]
+        .sort(
+            (a, b) =>
+                new Date(b.createdAt ?? 0).getTime() -
+                new Date(a.createdAt ?? 0).getTime()
+        )
+        .slice(0, 2);
 
     const stats = [
         {
@@ -121,7 +97,7 @@ const Dashboard = () => {
                         <p className="text-sm text-slate-500">Your most recent activity</p>
                     </div>
                     <a
-                        href="/dashboard/links"
+                        href="/dashboard/my-links"
                         className="text-sm font-medium text-indigo-600 transition hover:text-indigo-700"
                     >
                         View all →
