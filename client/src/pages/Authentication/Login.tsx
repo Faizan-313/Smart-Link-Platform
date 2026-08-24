@@ -11,6 +11,14 @@ function Login() {
     const login = useAuthStore((state) => state.login);
     const loading = useAuthStore((state) => state.loading);
     const error = useAuthStore((state) => state.error);
+    const user = useAuthStore((state) => state.user);
+
+    if(user != null) {
+        toast.error("Please logout first");
+        
+        //TODO: Fix this bug it is not navigating to the dashboard 
+        navigate("/dashboard");
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({

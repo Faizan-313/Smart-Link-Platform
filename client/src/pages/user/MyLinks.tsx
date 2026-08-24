@@ -6,10 +6,10 @@ import useLinkStore from "../../stores/linkStore";
 import type { LinkItem } from "../../types/main.types";
 
 function MyLinks() {
-    const links = useLinkStore((state) => state.links);
+    const links = useLinkStore((state) => state.userLinks);
     const loading = useLinkStore((state) => state.loading);
     const error = useLinkStore((state) => state.error);
-    const fetchLinks = useLinkStore((state) => state.fetchLinks);
+    const fetchLinks = useLinkStore((state) => state.fetchUserLinks);
     const deleteLink = useLinkStore((state) => state.deleteLink);
 
     const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -99,8 +99,8 @@ function MyLinks() {
                 </div>
 
                 {loading ? (
-                    <div className="space-y-3 p-5 sm:p-6">
-                        {[1, 2, 3].map((item) => <div key={item} className="h-24 animate-pulse rounded-xl bg-slate-100" />)}
+                    <div className="space-y-3 max-h-100 p-5 sm:p-6">
+                        {[1,2].map((item) => <div key={item} className="h-24 animate-pulse rounded-xl bg-slate-100" />)}
                     </div>
                 ) : links.length > 0 ? (
                     <div className="max-h-100 overflow-y-auto overscroll-contain">

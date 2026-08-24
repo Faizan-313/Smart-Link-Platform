@@ -37,17 +37,11 @@ const createUrl = async (req: AuthenticatedRequest, res: express.Response) => {
 
 const getAllUrl = async (req: AuthenticatedRequest, res: express.Response) => {
     try {
-        const userId = getUserId(req);
-        const shortUrls = await urlModel.find(
-            userId
-                ? {
-                    $or: [{ user: userId, visibility: "private" }, { visibility: "public" }],
-                }
-                : { visibility: "public" }
-        );
+        // const userId = getUserId(req);
+        const shortUrls = await urlModel.find({ visibility: "public" });
         if (shortUrls.length <= 0) return res.status(400).json({ message: "short urls not found" });
 
-        //TODO: Add pagination and sorting of urls based on user created and public urls.
+        //TODO: Add pagination and sorting of urls based on creation.
 
         return res.status(200).send(shortUrls);
     } catch (error) {
@@ -59,6 +53,7 @@ const getAllUrl = async (req: AuthenticatedRequest, res: express.Response) => {
 const getUserUrls = async (req: AuthenticatedRequest, res: express.Response) => {
     try {
         const userId = getUserId(req);
+        if(!userId) return res.status(401).json({ message: "Unauthorized" });
         const shortUrls = await urlModel.find({ user: userId });
 
         return res.status(200).send(shortUrls);

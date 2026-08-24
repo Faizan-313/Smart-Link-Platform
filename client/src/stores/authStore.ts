@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import axios from "axios";
+import { api } from "../api/api";
 
 interface User {
     id: string;
@@ -97,10 +98,11 @@ const useAuthStore = create<AuthStore>()(
                     return {success: true, message: "Registration failed"};
                 }
             },
+
             logout: async () => {
                 set({ loading: true, error: null });
                 try {
-                    await axios.post(`${import.meta.env.VITE_API_URL}/auth/logout`, {}, { withCredentials: true });
+                    await api("POST", "/auth/logout");
 
                     set({
                         user: null,

@@ -9,6 +9,7 @@ import UserLayout from "./layout/UserLayout"
 import Dashboard from "./pages/user/Dashboard"
 import CreateLink from "./pages/user/components/CreateLink"
 import MyLinks from "./pages/user/MyLinks"
+import PublicLinks from "./pages/user/PublicLinks"
 
 function AppContent() {
   return (
@@ -21,6 +22,7 @@ function AppContent() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/create-link" element={<CreateLink />} />
         <Route path="/dashboard/my-links" element={<MyLinks />} />
+        <Route path="/dashboard/public-links" element={<PublicLinks />} />
       </Route>
     </Routes>
   )

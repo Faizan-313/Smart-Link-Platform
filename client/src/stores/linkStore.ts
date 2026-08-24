@@ -4,27 +4,39 @@ import { api } from "../api/api";
 import type { LinkItem } from "../types/main.types";
 
 interface LinkStore {
-    links: LinkItem[];
+    userLinks: LinkItem[];
+    publicLinks: LinkItem[];
     loading: boolean;
     error: string | null;
 
-    fetchLinks: () => Promise<void>;
+    fetchUserLinks: () => Promise<void>;
+    fetchPublicLinks: () => Promise<void>;
     deleteLink: (id: string) => Promise<void>;
 }
 
 const useLinkStore = create<LinkStore>()(
     persist(
         (set) => ({
-            links: [] as LinkItem[],
+            userLinks: [] as LinkItem[],
+            publicLinks: [] as LinkItem[],
             loading: false,
             error: null as string | null,
 
-            fetchLinks: async () => {
+            fetchUserLinks: async () => {
                 set({ loading: true, error: null });
-
                 try {
                     const res = await api<LinkItem[]>("GET", "/shortUrl/user");
-                    set({ links: res, loading: false });
+                    set({ userLinks: res, loading: false });
+                } catch {
+                    set({ error: "Failed to fetch links", loading: false });
+                }
+            },
+
+            fetchPublicLinks: async () => {
+                set({ loading: true, error: null });
+                try {
+                    const res = await api<LinkItem[]>("GET", "/shortUrl");
+                    set({ publicLinks: res, loading: false});
                 } catch {
                     set({ error: "Failed to fetch links", loading: false });
                 }
@@ -33,7 +45,7 @@ const useLinkStore = create<LinkStore>()(
             deleteLink: async (id) => {
                 await api("DELETE", `/shortUrl/${id}`);
                 set((state) => ({
-                    links: state.links.filter((link) => link._id !== id),
+                    userLinks: state.userLinks.filter((link) => link._id !== id),
                     error: null,
                 }));
             },

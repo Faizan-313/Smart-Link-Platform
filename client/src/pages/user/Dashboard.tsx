@@ -3,16 +3,16 @@ import { Link } from "react-router-dom";
 import useLinkStore from "../../stores/linkStore";
 
 const Dashboard = () => {
-    const fetchLinks = useLinkStore((state) => state.fetchLinks);
-    const Links = useLinkStore((state) => state.links);
+    const fetchLinks = useLinkStore((state) => state.fetchUserLinks);
+    const links = useLinkStore((state) => state.userLinks);
     const loading = useLinkStore((state) => state.loading);
 
     useEffect(() => {
         void fetchLinks();
     }, [fetchLinks]);
 
-    const recentLinks = [...Links]
-        .sort(
+    const recentLinks = [...links]
+        .sort( 
             (a, b) =>
                 new Date(b.createdAt ?? 0).getTime() -
                 new Date(a.createdAt ?? 0).getTime()
@@ -22,7 +22,7 @@ const Dashboard = () => {
     const stats = [
         {
             label: "Total links",
-            value: String(Links.length),
+            value: String(links.length),
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="h-5 w-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5 21 3m0 0h-5.25M21 3v5.25M11 4H6.8c-1.68 0-2.52 0-3.162.327a3 3 0 0 0-1.311 1.311C2 6.28 2 7.12 2 8.8v8.4c0 1.68 0 2.52.327 3.162a3 3 0 0 0 1.311 1.311C4.28 22 5.12 22 6.8 22h8.4c1.68 0 2.52 0 3.162-.327a3 3 0 0 0 1.311-1.311C20 19.72 20 18.88 20 17.2V13" />
@@ -32,7 +32,7 @@ const Dashboard = () => {
         },
         {
             label: "Private links",
-            value: String(Links.filter((link) => link.visibility === "private").length),
+            value: String(links.filter((link) => link.visibility === "private").length),
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="h-5 w-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 15.75a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5ZM6.75 10.5V6.75a5.25 5.25 0 0 1 10.5 0V10.5m-11.25 0h12c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-12A1.125 1.125 0 0 1 4.875 19.875v-8.25c0-.621.504-1.125 1.125-1.125Z" />
@@ -42,7 +42,7 @@ const Dashboard = () => {
         },
         {
             label: "Public links",
-            value: String(Links.filter((link) => link.visibility === "public").length),
+            value: String(links.filter((link) => link.visibility === "public").length),
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="h-5 w-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0a14.98 14.98 0 0 1-3.75-9A14.98 14.98 0 0 1 12 3m0 18a14.98 14.98 0 0 0 3.75-9A14.98 14.98 0 0 0 12 3m-9 9h18" />

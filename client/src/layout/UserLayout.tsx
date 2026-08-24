@@ -23,7 +23,7 @@ const navigation = [
     },
     {
         name: "Public Links",
-        to: "#",
+        to: "/dashboard/public-links",
         icon: (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="h-5 w-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0a14.98 14.98 0 0 1-3.75-9A14.98 14.98 0 0 1 12 3m0 18a14.98 14.98 0 0 0 3.75-9A14.98 14.98 0 0 0 12 3m-9 9h18" />
