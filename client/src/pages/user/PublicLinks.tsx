@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ExternalLink, Link2, Plus } from "lucide-react";
+import { ExternalLink, Link2, Medal, Plus } from "lucide-react";
 import useLinkStore from "../../stores/linkStore";
 import { useEffect } from "react";
 
@@ -12,6 +12,31 @@ const PublicLinks = () => {
     useEffect(() => {
         void fetchLinks();
     }, [fetchLinks ])
+
+    const sortedLinks = [...links].sort((a, b) => {
+        return b.clicks - a.clicks; 
+    })
+
+    const rankStyles = [
+        {
+            row: "border-l-amber-400 bg-amber-50/50",
+            medal:
+            "bg-gradient-to-br from-amber-300 to-amber-500 text-white shadow-sm shadow-amber-200 ring-6 ring-amber-100",
+            label: "1st",
+        },
+        {
+            row: "border-l-slate-400 bg-slate-50/70",
+            medal:
+            "bg-gradient-to-br from-slate-300 to-slate-500 text-white shadow-sm shadow-slate-200 ring-4 ring-amber-100",
+            label: "2nd",
+        },
+        {
+            row: "border-l-orange-400 bg-orange-50/50",
+            medal:
+            "bg-gradient-to-br from-orange-300 to-orange-500 text-white shadow-sm shadow-orange-200 ring-2 ring-amber-100",
+            label: "3rd",
+        },
+    ];
 
     return (
         <div className="space-y-8">
@@ -47,17 +72,35 @@ const PublicLinks = () => {
                     <div className="space-y-3 max-h-100 p-5 sm:p-6">
                         {[1,2].map((item) => <div key={item} className="h-24 animate-pulse rounded-xl bg-slate-100" />)}
                     </div>
-                ) : links.length > 0 ? (
+                ) : sortedLinks.length > 0 ? (
                     <div className="max-h-100 overflow-y-auto overscroll-contain">
                         <div className="divide-y divide-slate-100">
-                            {links.map((link) => (
+                            {sortedLinks.map((link, index) => (
                                 <div
                                     key={link._id}
-                                    className="group flex flex-col gap-2.5 px-5 py-3.5 transition hover:bg-slate-50/80 sm:flex-row sm:items-center sm:justify-between sm:px-6"
+                                    className={`group flex flex-col gap-2.5 px-5 py-3.5 transition-all duration-200
+                                        hover:bg-slate-50/80 hover:shadow-sm
+                                        sm:flex-row sm:items-center sm:justify-between sm:px-6
+                                        border-l-4
+                                        ${rankStyles[index]?.row ?? "border-l-transparent bg-white"}`}
                                 >
-                                    <div className="min-w-0">
-                                        <p className="mb-1 truncate text-sm font-semibold text-slate-950">{link.shortUrl}</p>
+                                    <div className="flex min-w-0 items-start gap-3">
+                                        {rankStyles[index] ? (
+                                            <span
+                                                title={`${rankStyles[index].label} place`}
+                                                className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${rankStyles[index].medal}`}
+                                            >
+                                                <Medal className="h-4 w-4" aria-hidden="true" />
+                                                <span className="sr-only">{rankStyles[index].label} place</span>
+                                            </span>
+                                        ) : null}
+                                        <div className="min-w-0">
+                                            <div className="mb-1 flex min-w-0 items-center gap-2">
+                                                <p className="truncate text-sm font-semibold text-slate-950">{link.shortUrl}</p>
+                                                <span className="max-w-[45%] truncate text-[11px] font-medium text-slate-400">by {link.username ?? "Unknown user"}</span>
+                                            </div>
                                         <p className="max-w-xl truncate text-xs text-slate-500">{link.fullUrl}</p>
+                                        </div>
                                     </div>
 
                                     <div className="flex items-center justify-between gap-4 sm:justify-end">

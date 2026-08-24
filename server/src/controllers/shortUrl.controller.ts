@@ -38,12 +38,22 @@ const createUrl = async (req: AuthenticatedRequest, res: express.Response) => {
 const getAllUrl = async (req: AuthenticatedRequest, res: express.Response) => {
     try {
         // const userId = getUserId(req);
-        const shortUrls = await urlModel.find({ visibility: "public" });
+        const shortUrls = await urlModel
+            .find({ visibility: "public" })
+            .populate("user", "username")
+            .lean();
         if (shortUrls.length <= 0) return res.status(400).json({ message: "short urls not found" });
 
         //TODO: Add pagination and sorting of urls based on creation.
 
-        return res.status(200).send(shortUrls);
+        const publicLinks = shortUrls.map(({ user, ...link }) => ({
+            ...link,
+            username: user && typeof user === "object" && "username" in user
+                ? user.username
+                : "Unknown user",
+        }));
+
+        return res.status(200).send(publicLinks);
     } catch (error) {
         console.log("Error --> ", error);
         return res.status(500).json({ message: "Something went wrong" });

@@ -4,6 +4,7 @@ type LinkItem = {
     shortUrl: string;
     visibility: "public" | "private";
     clicks: number;
+    username?: string;
     createdAt?: string;
 };
 
