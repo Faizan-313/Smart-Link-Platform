@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ExternalLink, Link2, Plus, Trash2, X } from "lucide-react";
 import toast from "react-hot-toast";
 import useLinkStore from "../../stores/linkStore";
+import useAuthStore from "../../stores/authStore";
 import type { LinkItem } from "../../types/main.types";
 
 function MyLinks() {
@@ -11,6 +12,7 @@ function MyLinks() {
     const error = useLinkStore((state) => state.error);
     const fetchLinks = useLinkStore((state) => state.fetchUserLinks);
     const deleteLink = useLinkStore((state) => state.deleteLink);
+    const userId = useAuthStore((state) => state.user?.id);
 
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [selectedVisibility, setSelectedVisibility] = useState<"public" | "private">("public");
@@ -22,8 +24,8 @@ function MyLinks() {
     const visibleLinks = selectedVisibility === "public" ? publicLinks : privateLinks;
 
     useEffect(() => {
-        void fetchLinks();
-    }, [fetchLinks]);
+        if (userId) void fetchLinks(userId);
+    }, [fetchLinks, userId]);
 
     async function handleDelete() {
         if (!linkToDelete) return;

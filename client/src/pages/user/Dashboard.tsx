@@ -1,15 +1,17 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import useLinkStore from "../../stores/linkStore";
+import useAuthStore from "../../stores/authStore";
 
 const Dashboard = () => {
     const fetchLinks = useLinkStore((state) => state.fetchUserLinks);
     const links = useLinkStore((state) => state.userLinks);
     const loading = useLinkStore((state) => state.loading);
+    const userId = useAuthStore((state) => state.user?.id);
 
     useEffect(() => {
-        void fetchLinks();
-    }, [fetchLinks]);
+        if (userId) void fetchLinks(userId);
+    }, [fetchLinks, userId]);
 
     const recentLinks = [...links]
         .sort( 

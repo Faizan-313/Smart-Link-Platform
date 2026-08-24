@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/api";
 import toast from "react-hot-toast";
+import useLinkStore from "../../../stores/linkStore";
 
 type Visibility = "public" | "private";
 
@@ -10,6 +11,7 @@ const CreateLink = () => {
     const [visibility, setVisibility] = useState<Visibility>("public");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const invalidateUserLinks = useLinkStore((state) => state.invalidateUserLinks);
 
     async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -36,6 +38,7 @@ const CreateLink = () => {
             });
 
             toast.success(`Short URL created: ${shortUrl}`);
+            invalidateUserLinks();    //so to fetch again for the updated links list
             setUrl("");
             setVisibility("public");
             navigate("/dashboard");

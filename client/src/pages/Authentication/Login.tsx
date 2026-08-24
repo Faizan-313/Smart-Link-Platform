@@ -1,5 +1,5 @@
 import { Mail, Lock, LogIn, Eye, EyeClosed } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import useAuthStore from "../../stores/authStore";
@@ -13,12 +13,12 @@ function Login() {
     const error = useAuthStore((state) => state.error);
     const user = useAuthStore((state) => state.user);
 
-    if(user != null) {
-        toast.error("Please logout first");
-        
-        //TODO: Fix this bug it is not navigating to the dashboard 
-        navigate("/dashboard");
-    }
+    useEffect(() => {
+        if (user != null) {
+            toast.error("Please logout first");
+            navigate("/dashboard", { replace: true });
+        }
+    }, [navigate, user]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
