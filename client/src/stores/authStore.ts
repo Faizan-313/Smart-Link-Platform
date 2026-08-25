@@ -65,7 +65,11 @@ const useAuthStore = create<AuthStore>()(
                         loading: false,
                     });
 
-                    return {success: false, message: message};
+                    if(axios.isAxiosError(error) && error.response?.status === 429){
+                        return {success: false, message: "Too many requests. Please try again later."};
+                    }
+
+                    return {success: false, message: "Login Failed... Please try again."};
                 }
             },
 
@@ -84,6 +88,7 @@ const useAuthStore = create<AuthStore>()(
                         loading: false,
                         error: null,
                     });
+
                     return {success: true, message: "Registration successfull"};
                 } catch (error: unknown) {
                     const message =
@@ -95,7 +100,12 @@ const useAuthStore = create<AuthStore>()(
                         error: message,
                         loading: false,
                     });
-                    return {success: true, message: "Registration failed"};
+
+                    if(axios.isAxiosError(error) && error.response?.status === 429){
+                        return {success: false, message: "Too many requests. Please try again later."};
+                    }
+
+                    return {success: false, message: "Registration failed"};
                 }
             },
 

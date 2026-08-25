@@ -3,13 +3,16 @@ import express from "express";
 import cors from "cors";
 import connectDb from "./config/db.config";
 import cookieParser from "cookie-parser";
+import { connectRedis } from "./config/redis.config";
 
 import shortUrlRoute from "./routes/shortUrl.routes"
 import authRoute from "./routes/auth.routes"
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
 connectDb();
+connectRedis();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

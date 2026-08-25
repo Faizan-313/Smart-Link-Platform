@@ -2,7 +2,7 @@
 const Home = () => {
     return (
         <main className="relative flex flex-1 items-center overflow-hidden bg-slate-50 px-6 py-16 text-slate-900">
-            <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full border-[32px] border-slate-200/70" />
+            <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full border-32 border-slate-200/70" />
             <div className="pointer-events-none absolute bottom-10 left-8 h-16 w-16 rounded-2xl border border-slate-200 bg-white/70" />
 
             <section className="relative mx-auto flex w-full max-w-6xl flex-col gap-10 rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60 md:flex-row md:items-center md:justify-between md:p-12">

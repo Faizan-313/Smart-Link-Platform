@@ -6,12 +6,13 @@ import {
     refreshUserToken
 } from "../controllers/userAuth.controller";
 import authenticateToken from "../middleware/auth.middleware";
+import rateLimitter from "../middleware/rateLimitter.middleware";
 
 const router = express.Router();
 
-router.post("/register", registerUser);
-router.post("/login", loginUser);
+router.post("/register", rateLimitter, registerUser);
+router.post("/login", rateLimitter, loginUser);
 router.post("/logout", authenticateToken, logoutUser);
-router.post("/refresh", refreshUserToken);
+router.post("/refresh", rateLimitter, refreshUserToken);
 
 export default router;

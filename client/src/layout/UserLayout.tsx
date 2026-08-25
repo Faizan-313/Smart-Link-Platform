@@ -1,6 +1,5 @@
 import { Outlet, Link, useLocation, Navigate } from "react-router-dom";
 import useAuthStore from "../stores/authStore";
-import toast from "react-hot-toast";
 
 const navigation = [
     {
@@ -47,7 +46,6 @@ function UserLayout() {
     const user = useAuthStore((state) => state.user);
 
     if (!user) {
-        toast.error("Please Login First")
         return <Navigate to="/login" replace />;
     }
 

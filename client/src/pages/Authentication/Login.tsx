@@ -46,7 +46,7 @@ function Login() {
                 toast.success(response.message || "Login successful");
                 navigate("/dashboard");
             } else {
-                toast.error("Login failed. Please try again.");
+                toast.error(response.message);
             }
         } catch {
             toast.error(error || "Login failed. Please try again.");
