@@ -31,10 +31,14 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <Toaster position="top-center" reverseOrder={false} />
-      <Navbar />
-      <AppContent />
-      <Footer />
+      <div className="flex min-h-screen flex-col">
+        <Toaster position="top-center" reverseOrder={false} />
+        <Navbar />
+        <div className="flex flex-1 flex-col">
+          <AppContent />
+        </div>
+        <Footer />
+      </div>
     </Router>
   )
 }
