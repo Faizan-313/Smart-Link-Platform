@@ -50,7 +50,7 @@ function UserLayout() {
     }
 
     return (
-        <div className="min-h-[76vh] bg-slate-50 text-slate-900">
+        <div className="dashboard-backdrop min-h-[76vh] bg-slate-50 text-slate-900">
             {/* Mobile nav */}
             <div className="border-b border-slate-200 bg-white px-4 py-3 lg:hidden">
                 <div className="flex gap-2 overflow-x-auto">

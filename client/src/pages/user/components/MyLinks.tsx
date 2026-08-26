@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ExternalLink, Link2, Plus, Trash2, X } from "lucide-react";
 import toast from "react-hot-toast";
-import useLinkStore from "../../stores/linkStore";
-import useAuthStore from "../../stores/authStore";
-import type { LinkItem } from "../../types/main.types";
+import useLinkStore from "../../../stores/linkStore";
+import useAuthStore from "../../../stores/authStore";
+import type { LinkItem } from "../../../types/main.types";
 
 function MyLinks() {
     const links = useLinkStore((state) => state.userLinks);
@@ -111,7 +111,7 @@ function MyLinks() {
                                         {visibleLinks.map((link) => (
                                             <div
                                                 key={link._id}
-                                                className="group flex flex-col gap-2.5 px-5 py-3.5 transition hover:bg-slate-50/80 sm:flex-row sm:items-center sm:justify-between sm:px-6"
+                                                className="group flex flex-col gap-2.5 border-l-2 border-transparent px-5 py-3.5 transition hover:border-indigo-400 hover:bg-indigo-50/70 sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:hover:border-indigo-400 dark:hover:bg-indigo-950/40"
                                             >
                                                 <div className="min-w-0">
                                                     <p className="mb-1 truncate text-sm font-semibold text-slate-950">{link.shortUrl}</p>

@@ -18,7 +18,7 @@ function Login() {
             toast.error("Please logout first");
             navigate("/dashboard", { replace: true });
         }
-    }, [navigate, user]);
+    }, [navigate]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -54,7 +54,7 @@ function Login() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top_left,#f8fafc,#f1f5f9_35%,#e2e8f0)] px-4 py-10">
+        <div className="auth-backdrop flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top_left,#f8fafc,#f1f5f9_35%,#e2e8f0)] px-4 py-10 dark:bg-[radial-gradient(circle_at_top_left,#1e293b,#0f172a_45%,#020617)]">
             <div className="relative w-full max-w-md overflow-hidden rounded-[28px] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/80">
                 <div className="mb-8 text-center">
                     <div className="mb-4 text-2xl font-semibold tracking-tight text-slate-900">LinkFlow</div>

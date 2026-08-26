@@ -1,4 +1,4 @@
-import Home from "./pages/Home"
+import Home from "./pages/common/Home"
 import Login from "./pages/Authentication/Login"
 import Navbar from "./components/Navbar"
 import Register from "./pages/Authentication/Register"
@@ -8,8 +8,8 @@ import Footer from "./components/Footer"
 import UserLayout from "./layout/UserLayout"
 import Dashboard from "./pages/user/Dashboard"
 import CreateLink from "./pages/user/components/CreateLink"
-import MyLinks from "./pages/user/MyLinks"
-import PublicLinks from "./pages/user/PublicLinks"
+import MyLinks from "./pages/user/components/MyLinks"
+import PublicLinks from "./pages/user/components/PublicLinks"
 
 function AppContent() {
   return (

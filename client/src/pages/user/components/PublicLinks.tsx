@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ExternalLink, Link2, Medal, Plus } from "lucide-react";
-import useLinkStore from "../../stores/linkStore";
+import useLinkStore from "../../../stores/linkStore";
 import { useEffect } from "react";
 
 const PublicLinks = () => {
@@ -19,21 +19,21 @@ const PublicLinks = () => {
 
     const rankStyles = [
         {
-            row: "border-l-amber-400 bg-amber-50/50",
+            row: "rank-gold border-l-amber-400 bg-amber-50/50",
             medal:
-            "bg-gradient-to-br from-amber-300 to-amber-500 text-white shadow-sm shadow-amber-200 ring-6 ring-amber-100",
+            "rank-gold-medal bg-gradient-to-br from-amber-300 to-amber-500 text-white shadow-sm shadow-amber-200 ring-6 ring-amber-100",
             label: "1st",
         },
         {
-            row: "border-l-slate-400 bg-slate-50/70",
+            row: "rank-silver border-l-slate-400 bg-slate-50/70",
             medal:
-            "bg-gradient-to-br from-slate-300 to-slate-500 text-white shadow-sm shadow-slate-200 ring-4 ring-amber-100",
+            "rank-silver-medal bg-gradient-to-br from-slate-300 to-slate-500 text-white shadow-sm shadow-slate-200 ring-4 ring-amber-100",
             label: "2nd",
         },
         {
-            row: "border-l-orange-400 bg-orange-50/50",
+            row: "rank-bronze border-l-orange-400 bg-orange-50/50",
             medal:
-            "bg-gradient-to-br from-orange-300 to-orange-500 text-white shadow-sm shadow-orange-200 ring-2 ring-amber-100",
+            "rank-bronze-medal bg-gradient-to-br from-orange-300 to-orange-500 text-white shadow-sm shadow-orange-200 ring-2 ring-amber-100",
             label: "3rd",
         },
     ];
