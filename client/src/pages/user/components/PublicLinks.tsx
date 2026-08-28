@@ -49,7 +49,9 @@ const PublicLinks = () => {
         <div className="space-y-8">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
+                    <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600">Community directory</p>
                     <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">World links</h1>
+                    <p className="mt-2 max-w-xl text-sm text-slate-500">Explore the most useful links shared by the community.</p>
                 </div>
                 <Link
                     to="/dashboard/create-link"
@@ -60,13 +62,15 @@ const PublicLinks = () => {
                 </Link>
             </div>
 
-            <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 sm:px-6">
+            <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 sm:px-6 dark:border-slate-800">
                     <div>
                         <h2 className="font-semibold text-slate-900">All links</h2>
                         <p className="mt-1 text-xs text-slate-500">{links.length} {links.length === 1 ? "link" : "links"}</p>
                     </div>
-                    <Link2 className="h-5 w-5 text-slate-300" aria-hidden="true" />
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-300">
+                        <Link2 className="h-4 w-4" aria-hidden="true" />
+                    </span>
                 </div>
 
                 {error ? (
@@ -76,17 +80,17 @@ const PublicLinks = () => {
                 ) : null}
 
                 {loading ? (
-                    <div className="space-y-3 max-h-100 p-5 sm:p-6">
+                    <div className="space-y-3 p-5 sm:p-6">
                         {[1,2].map((item) => <div key={item} className="h-24 animate-pulse rounded-xl bg-slate-100" />)}
                     </div>
                 ) : sortedLinks.length > 0 ? (
-                    <div className="max-h-100 overflow-y-auto overscroll-contain">
+                    <div className="max-h-120 overflow-y-auto overscroll-contain">
                         <div className="divide-y divide-slate-100">
                             {sortedLinks.map((link, index) => (
                                 <div
                                     key={link._id}
                                     className={`group flex flex-col gap-2.5 px-5 py-3.5 transition-all duration-200
-                                        hover:bg-slate-50/80 hover:shadow-sm
+                                        hover:bg-slate-50/80 hover:shadow-sm dark:hover:bg-slate-800/60
                                         sm:flex-row sm:items-center sm:justify-between sm:px-6
                                         border-l-4
                                         ${rankStyles[index]?.row ?? "border-l-transparent bg-white"}`}
@@ -125,7 +129,16 @@ const PublicLinks = () => {
                                 </div>
                             ))}
                         </div>
-                        <div><button onClick={loadMoreLinks} disabled={!cursor || loading}>Load More</button></div>
+                        <div className="border-t border-slate-100 bg-slate-50/70 px-5 py-4 text-center dark:border-slate-800 dark:bg-slate-950/40">
+                            <button
+                                type="button"
+                                onClick={loadMoreLinks}
+                                disabled={!cursor || loading}
+                                className="inline-flex min-w-36 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-indigo-500 dark:hover:bg-indigo-950/60 dark:hover:text-indigo-300 dark:disabled:bg-slate-800 dark:disabled:text-slate-500"
+                            >
+                                {loading ? "Loading..." : cursor ? "Load more links" : "All links loaded"}
+                            </button>
+                        </div>
                     </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center gap-3 px-6 py-16 text-center">
