@@ -8,10 +8,17 @@ const PublicLinks = () => {
     const fetchLinks = useLinkStore((state) => state.fetchPublicLinks);
     const loading = useLinkStore((state) => state.loading);
     const error = useLinkStore((state) => state.error);
+    const cursor = useLinkStore((state) => state.cursor);
 
     useEffect(() => {
-        void fetchLinks();
-    }, [fetchLinks ])
+        if(links.length === 0) void fetchLinks("/shortUrl/public?limit=10");
+    }, [fetchLinks, links.length])
+
+    const loadMoreLinks = () => {
+        if (cursor) {
+            void fetchLinks(`/shortUrl/public?limit=7&cursor=${encodeURIComponent(cursor)}`, true);
+        }
+    };
 
     const sortedLinks = [...links].sort((a, b) => {
         return b.clicks - a.clicks; 
@@ -118,6 +125,7 @@ const PublicLinks = () => {
                                 </div>
                             ))}
                         </div>
+                        <div><button onClick={loadMoreLinks} disabled={!cursor || loading}>Load More</button></div>
                     </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center gap-3 px-6 py-16 text-center">

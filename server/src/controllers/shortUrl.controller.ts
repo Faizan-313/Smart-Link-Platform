@@ -1,5 +1,6 @@
 import { urlModel } from "../models/shortUrl.model"
 import express from "express"
+import mongoose from "mongoose"
 import { AuthenticatedRequest } from "../types/main.types";
 
 const getUserId = (req: AuthenticatedRequest) => {
@@ -37,14 +38,31 @@ const createUrl = async (req: AuthenticatedRequest, res: express.Response) => {
 
 const getAllUrl = async (req: AuthenticatedRequest, res: express.Response) => {
     try {
-        // const userId = getUserId(req);
-        const shortUrls = await urlModel
-            .find({ visibility: "public" })
-            .populate("user", "username")
-            .lean();
-        if (shortUrls.length <= 0) return res.status(400).json({ message: "short urls not found" });
+        const { limit, cursor } = req.query;
+        const parsedLimit = typeof limit === "string" ? parseInt(limit, 10) : NaN;
+        const pageLimit = Number.isFinite(parsedLimit) && parsedLimit > 0
+            ? Math.min(parsedLimit, 7)
+            : 7;
 
-        //TODO: Add pagination and sorting of urls based on creation.
+        const query: any = { visibility: "public" };
+
+        if (cursor && typeof cursor === "string") {
+            if (!mongoose.isValidObjectId(cursor)) {
+                return res.status(400).json({ message: "Invalid cursor" });
+            }
+            query._id = { $gt: cursor };
+        }
+
+        const shortUrls = await urlModel
+            .find(query)
+            .sort({ _id: 1 })
+            .populate("user", "username")
+            .lean()
+            .limit(pageLimit);
+
+        if (shortUrls.length <= 0) {
+            return res.status(200).json({ publicLinks: [], cursor: null });
+        }
 
         const publicLinks = shortUrls.map(({ user, ...link }) => ({
             ...link,
@@ -53,7 +71,9 @@ const getAllUrl = async (req: AuthenticatedRequest, res: express.Response) => {
                 : "Unknown user",
         }));
 
-        return res.status(200).send(publicLinks);
+        const newCursor = publicLinks.length > 0 ? publicLinks[publicLinks.length - 1]._id : null;
+
+        return res.status(200).send({publicLinks: publicLinks, cursor: newCursor});
     } catch (error) {
         console.log("Error --> ", error);
         return res.status(500).json({ message: "Something went wrong" });

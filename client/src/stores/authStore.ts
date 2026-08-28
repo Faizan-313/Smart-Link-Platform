@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import axios from "axios";
 import { api } from "../api/api";
+import useLinkStore from "./linkStore";
 
 interface User {
     id: string;
@@ -111,6 +112,7 @@ const useAuthStore = create<AuthStore>()(
 
             logout: async () => {
                 set({ loading: true, error: null });
+                const emptyLinkStore = useLinkStore.getState().emptyStore;
                 try {
                     await api("POST", "/auth/logout");
 
@@ -119,6 +121,7 @@ const useAuthStore = create<AuthStore>()(
                         loading: false,
                         error: null,
                     });
+                    emptyLinkStore();
                 } catch (error: unknown) {
                     const message =
                         error instanceof Error

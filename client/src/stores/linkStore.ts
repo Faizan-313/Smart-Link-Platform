@@ -10,11 +10,18 @@ interface LinkStore {
     userLinksOwnerId: string | null;
     loading: boolean;
     error: string | null;
+    cursor: string | null;
 
     fetchUserLinks: (ownerId: string) => Promise<void>;
-    fetchPublicLinks: () => Promise<void>;
+    fetchPublicLinks: (url: string, append?: boolean) => Promise<void>;
     invalidateUserLinks: () => void;
+    emptyStore: () => void;
     deleteLink: (id: string) => Promise<void>;
+}
+
+interface ApiResponse<T> {
+    publicLinks: T;
+    cursor: string | null;
 }
 
 const useLinkStore = create<LinkStore>()(
@@ -26,6 +33,7 @@ const useLinkStore = create<LinkStore>()(
             userLinksOwnerId: null,
             loading: false,
             error: null as string | null,
+            cursor: null as string | null,
 
             fetchUserLinks: async (ownerId) => {
                 const state = useLinkStore.getState();
@@ -40,11 +48,15 @@ const useLinkStore = create<LinkStore>()(
                 }
             },
 
-            fetchPublicLinks: async () => {
+            fetchPublicLinks: async (url: string, append = false) => {
                 set({ loading: true, error: null });
                 try {
-                    const res = await api<LinkItem[]>("GET", "/shortUrl");
-                    set({ publicLinks: res, loading: false});
+                    const res = await api<ApiResponse<LinkItem[]>>("GET", url);
+                    set((state) => ({
+                        publicLinks: append ? [...state.publicLinks, ...res.publicLinks] : res.publicLinks,
+                        cursor: res.cursor,
+                        loading: false,
+                    }));
                 } catch {
                     set({ error: "Failed to fetch links", loading: false });
                 }
@@ -52,6 +64,18 @@ const useLinkStore = create<LinkStore>()(
 
             invalidateUserLinks: () => {
                 set({ userLinksLoaded: false });
+            },
+
+            emptyStore: () => {
+                set({
+                    userLinks: [],
+                    publicLinks: [],
+                    userLinksLoaded: false,
+                    userLinksOwnerId: null,
+                    loading: false,
+                    error: null,
+                    cursor: null,
+                });
             },
 
             deleteLink: async (id) => {
