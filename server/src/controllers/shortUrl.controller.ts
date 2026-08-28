@@ -14,14 +14,37 @@ const getUserId = (req: AuthenticatedRequest) => {
 const createUrl = async (req: AuthenticatedRequest, res: express.Response) => {
     try {
         const { url, visibility } = req.body ?? {};
-        if (!url) return res.status(400).json({ message: "url is required" });
+        if (!url) {
+            return res.status(400).json({ message: "url is required" });
+        }
 
         const userId = getUserId(req);
-        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
 
-        const existingUrl = await urlModel.findOne({ fullUrl: url });
-        if (existingUrl && (existingUrl.visibility === "public" || existingUrl.user?.toString() === userId)) {
-            return res.status(409).json({ message: "Url already exists", shortUrl: existingUrl.shortUrl });
+        let existingUrl;
+
+        if (visibility === "public") {
+            // Public URL must be unique across the entire platform
+            existingUrl = await urlModel.findOne({
+                fullUrl: url,
+                visibility: "public"
+            });
+        } else {
+            // Private URL only needs to be unique for this user
+            existingUrl = await urlModel.findOne({
+                fullUrl: url,
+                visibility: "private",
+                user: userId
+            });
+        }
+
+        if (existingUrl) {
+            return res.status(409).json({
+                message: "Url already exists",
+                shortUrl: existingUrl.shortUrl
+            });
         }
 
         const shortUrl = await urlModel.create({
