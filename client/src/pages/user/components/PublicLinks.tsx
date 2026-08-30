@@ -11,8 +11,8 @@ const PublicLinks = () => {
     const cursor = useLinkStore((state) => state.cursor);
 
     useEffect(() => {
-        if(links.length === 0) void fetchLinks("/shortUrl/public?limit=10");
-    }, [fetchLinks, links.length])
+        void fetchLinks("/shortUrl/public?limit=10");
+    }, [fetchLinks]);
 
     const loadMoreLinks = () => {
         if (cursor) {
